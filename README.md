@@ -1,36 +1,28 @@
-# GreenLife – Monitoramento Ambiental com Vaso Inteligente
+# Semáforo Inteligente com Modo Noturno
 
 ## Descrição  
-O GreenLife é um sistema embarcado desenvolvido para simular e monitorar as condições ambientais de uma planta por meio de um vaso inteligente. Utilizando o kit BitDogLab e a placa Raspberry Pi Pico W, o projeto emprega sensores simulados com joystick, LEDs, display OLED e buzzer para apresentar o estado da planta em tempo real, oferecendo alertas visuais e sonoros baseados nos níveis de temperatura e umidade do solo.
+É um sistema embarcado desenvolvido para simular o funcionamento de um semáforo inteligente com modo noturno. Utilizando a placa Raspberry Pi Pico e periféricos como LEDs RGB, buzzer, display OLED e matriz de LEDs, o projeto representa os estados de trânsito com alertas visuais e sonoros, incluindo uma lógica alternativa para operação noturna controlada por botão físico.
 
 ## Objetivo  
-O objetivo do projeto é simular condições reais de temperatura e umidade, proporcionando ao usuário uma visualização clara da “saúde” da planta. Além disso, busca servir como base para projetos futuros de automação residencial e agricultura urbana sustentável.
+O projeto tem como objetivo demonstrar o funcionamento de uma máquina de estados aplicada a sistemas de sinalização viária. Também busca servir como base para aplicações reais em controladores de tráfego urbano, abordando aspectos de segurança, usabilidade e operação em diferentes condições de luminosidade.
 
 ## Tecnologias e Hardware Utilizados  
-- **Placa Microcontroladora**: Raspberry Pi Pico W  
-- **Kit de Desenvolvimento**: BitDogLab  
-- **Protocolos de Comunicação**: UART (monitoramento via terminal serial), I2C (comunicação com o display OLED)  
-- **Sensores Utilizados**: Joystick (simulando temperatura e umidade)  
-- **Atuadores**: LED RGB, matriz de LEDs 5x5 e buzzer para alertas visuais e sonoros  
-- **Interface com o Usuário**: Display OLED para exibição gráfica e numérica, botões físicos para interação
+- **Placa Microcontroladora**: Raspberry Pi Pico  
+- **Protocolos de Comunicação**: I2C (display OLED), PIO (matriz de LEDs), PWM (controle de buzzer e LEDs RGB)  
+- **Sensores e Entradas**: Botão físico para alternância de modo (dia/noturno) com debounce  
+- **Atuadores**: LEDs RGB para representar os estados verde, amarelo e vermelho, matriz de LEDs 5x5 para reforço visual, e buzzer para alertas sonoros  
+- **Interface com o Usuário**: Display OLED para indicar o estado atual do semáforo
 
 ## Estrutura do Projeto  
-1. **Aquisição de Dados**: As entradas analógicas do joystick simulam as medições de temperatura (eixo X) e umidade (eixo Y).  
-2. **Processamento e Lógica**: Os dados são interpretados e classificados em três faixas (ideal, atenção e crítica), acionando os periféricos conforme o estado.  
-3. **Atuação e Alertas**: Em situações de risco, o sistema aciona o buzzer e altera as cores dos LEDs RGB e da matriz de LEDs para alertar o usuário.  
-4. **Exibição de Dados**: O display OLED alterna entre modos gráficos e numéricos, exibindo as informações em tempo real.  
-5. **Interação com o Usuário**: Dois botões físicos permitem alternar modos de exibição e silenciar alarmes.  
-6. **Comunicação Serial**: As informações também são transmitidas via UART para um terminal serial, permitindo o monitoramento remoto.  
-7. **Controle de Eventos**: Interrupções são utilizadas para os botões e para o temporizador, com tratamento de debounce por software para garantir estabilidade e precisão na leitura dos comandos.
-
-## Como Executar o Projeto  
-1. Conecte a placa Raspberry Pi Pico W ao computador.  
-2. Abra a IDE apropriada (Thonny, VSCode com Pico SDK, etc.) para programação da placa.  
-3. Compile e carregue o código-fonte no dispositivo.  
-4. Utilize o joystick para simular as medições. Observe os resultados no display OLED, na matriz de LEDs e no terminal serial.  
-5. Interaja com os botões para alternar modos ou silenciar alarmes quando o buzzer for ativado.
+1. **Máquina de Estados**: Três estados principais (Verde, Amarelo e Vermelho), cada um com duração total de 4 segundos e subdivisões internas para alertas sonoros.  
+2. **Modo Noturno**: Ativado por botão, substitui os estados padrão por pisca-pisca amarelo intermitente, reduzindo consumo e poluição visual.  
+3. **Alertas Sonoros**: Cada estado possui padrões distintos de buzzer para auxiliar deficientes visuais ou ambientes com pouca visibilidade.  
+4. **Atualização Visual**: Display OLED informa o estado atual, enquanto a matriz de LEDs exibe a cor correspondente.  
+5. **Controle de Interrupção**: Debounce por software garante leitura estável do botão de alternância.  
+6. **Temporização com FreeRTOS**: O controle dos ciclos é gerenciado por tarefas FreeRTOS, permitindo escalabilidade e precisão.
 
 ## Link do Projeto  
-- **Demonstração no YouTube**: [Vídeo](https://youtu.be/r31pUqLZNLk) / https://youtu.be/r31pUqLZNLk
+- **Demonstração no YouTube**: *Em breve*
+
 ## Autor  
 Desenvolvido por Levi Silva Freitas.
