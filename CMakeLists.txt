@@ -1,20 +1,3 @@
-# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.1.1)
-set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.1.1)
-set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-if (EXISTS ${picoVscode})
-    include(${picoVscode})
-endif()
-# ====================================================================================
-
-
-
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -24,33 +7,39 @@ include(pico_sdk_import.cmake)
 set(FREERTOS_KERNEL_PATH "D:/FreeRTOS-Kernel")
 include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
-project(PiscaLed C CXX ASM)
+
+project(final C CXX ASM)
+
+# Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+add_executable(final final.c inc/ssd1306.c)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib)
+pico_set_program_name(final "final")
+pico_set_program_version(final "0.1")
 
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(final 1)
+pico_enable_stdio_usb(final 1)
 
-add_executable(${PROJECT_NAME}  
-        blinkConta.c 
-        lib/ssd1306.c # Biblioteca para o display OLED
-        )
+pico_generate_pio_header(final ${CMAKE_CURRENT_LIST_DIR}/final.pio)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
-
-target_link_libraries(${PROJECT_NAME} 
-        pico_stdlib 
+# Add the standard library to the build
+target_link_libraries(final
+        pico_stdlib
+        hardware_i2c 
+        hardware_adc
+        hardware_pwm
+        hardware_pio
         hardware_gpio
-        hardware_i2c
         FreeRTOS-Kernel 
-        FreeRTOS-Kernel-Heap4
-        )
+        FreeRTOS-Kernel-Heap4)
 
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
+# Add the standard include files to the build
+target_include_directories(final PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/inc)
 
-pico_add_extra_outputs(${PROJECT_NAME})
+# Add any user requested libraries
+target_link_libraries(final)
 
-
-
-
+pico_add_extra_outputs(final)
